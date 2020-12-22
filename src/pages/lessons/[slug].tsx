@@ -94,6 +94,7 @@ const Lesson: FunctionComponent<LessonProps> = ({initialLesson}) => {
     course,
     slug,
     free_forever,
+    comments
   } = lesson
 
   const enhancedTranscript = useEnhancedTranscript(transcript_url)
