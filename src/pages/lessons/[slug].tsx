@@ -10,6 +10,7 @@ import playerMachine from 'machines/lesson-player-machine'
 import EggheadPlayer from 'components/EggheadPlayer'
 import LessonInfo from 'components/pages/lessons/LessonInfo'
 import Transcript from 'components/pages/lessons/Transcript'
+import Comment from 'components/pages/lessons/Comment'
 import {loadLesson} from 'lib/lessons'
 import {useViewer} from 'context/viewer-context'
 import {LessonResource} from 'types'
@@ -96,6 +97,8 @@ const Lesson: FunctionComponent<LessonProps> = ({initialLesson}) => {
     free_forever,
     comments
   } = lesson
+
+  const commentsAvailable = comments.some((comment: any) => comment.state === 'published')
 
   const enhancedTranscript = useEnhancedTranscript(transcript_url)
   const transcriptAvailable = transcript || enhancedTranscript
@@ -270,7 +273,7 @@ const Lesson: FunctionComponent<LessonProps> = ({initialLesson}) => {
                   className="text-lg font-semibold"
                 >
                   {transcriptAvailable && <Tab>Transcript</Tab>}
-                  <Tab>Comments</Tab>
+                  {commentsAvailable && <Tab>Comments</Tab>}
                 </TabList>
                 <TabPanels className="mt-6">
                   {transcriptAvailable && (
@@ -285,9 +288,22 @@ const Lesson: FunctionComponent<LessonProps> = ({initialLesson}) => {
                       />
                     </TabPanel>
                   )}
-                  <TabPanel>
-                    <p>Comments</p>
-                  </TabPanel>
+                  {commentsAvailable && (
+                    <TabPanel>
+                      <div className="space-y-10">
+                        {comments.map((item: any) => (
+                          <Comment
+                            key={item.id}
+                            comment={item.comment}
+                            state={item.state}
+                            createdAt={item.created_at}
+                            isCommentableOwner={item.is_commentable_owner}
+                            user={item.user}
+                          />
+                        ))}
+                      </div>
+                    </TabPanel>
+                  )}
                 </TabPanels>
               </Tabs>
             </div>
